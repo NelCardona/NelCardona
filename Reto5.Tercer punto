@@ -1,0 +1,91 @@
+//Insertar un Lider en la base de datos ProyectosConstruccion.db
+// Requerimiento tercero del Reto 5
+// Insertar un lider de la tabla Lider, de la base de datos.
+// Bibliotecas en java
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.util.Scanner;
+
+public class PrepaInsertar {
+
+    public static void main(String[] args){
+
+        
+        String url="jdbc:sqlite:C:\\db\\ProyectosConstruccion.db";
+        Scanner sc = new Scanner(System.in);
+
+        try{
+            Connection conn = DriverManager.getConnection(url);
+            String sql ="insert into Lider (Nombre, Primer_Apellido, Segundo_Apellido, Salario, Ciudad_Residencia, Cargo, Clasificacion, Documento_Identidad, Fecha_Nacimiento) values(?,?,?,?,?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql); 
+            // necesitamos los valores ? ?... ? ?...
+            //System.out.println("Introduzca el ID_Lider ");
+            //int idLider=sc.nextInt();
+
+
+            System.out.println("Introduzca el nombre ");
+            String nomBre=sc.nextLine();
+
+            System.out.println("Intoduzca el Primer Apellido");
+            String primerApellido=sc.nextLine();
+
+            System.out.println("Intoduzca el Segundo Apellido");
+            String segundoApellido=sc.nextLine();
+
+            
+
+            System.out.println("Intoduzca la Ciudad de Rersidencia");
+            String ciudadResidencia=sc.nextLine();
+
+            System.out.println("Intoduzca el Cargo");
+            String carGo=sc.nextLine();
+
+            
+
+            System.out.println("Intoduzca Documento Identidad");
+            String documentoIdentidad=sc.nextLine();
+
+            System.out.println("Intoduzca Fecha Nacimiento 00-00-00");
+            String fechaNacimiento=sc.nextLine();
+
+            System.out.println("Intoduzca la Clasificacion");
+            int clasiFicacion=sc.nextInt();
+            System.out.println("Intoduzca el Salario");
+            int salaRio=sc.nextInt();
+            
+            //pstmt.setInt(1,idLider);
+            pstmt.setString(1,nomBre);
+            pstmt.setString(2,primerApellido);
+            pstmt.setString(3,segundoApellido);
+            pstmt.setInt(4,salaRio);
+            pstmt.setString(5,ciudadResidencia);
+            pstmt.setString(6,carGo);
+            pstmt.setInt(7,clasiFicacion);
+            pstmt.setString(8,documentoIdentidad);
+            pstmt.setString(9,fechaNacimiento);
+
+            //cantidad de filas
+            int rows=pstmt.executeUpdate();
+
+            if (rows>0){
+                System.out.println("Se ha insertado un nuevo registro");
+            }
+
+            pstmt.close();
+            conn.close();
+            
+        }catch(Exception e){
+            System.out.println("Se ha presentado un error: " +e.getMessage());
+            e.printStackTrace();
+
+        }
+        
+        sc.close(); // cerramos el scanner
+    }    
+}
+
+
+    
+
+
