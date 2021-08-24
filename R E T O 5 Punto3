@@ -1,0 +1,52 @@
+// Insertar un Lider desde la bd, de manera interna
+//.............................
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+
+public class InsertarInterno {
+    public static void main(String[] args){
+
+        
+        String url="jdbc:sqlite:C:\\db\\ProyectosConstruccion.db";
+        
+
+        try{
+            Connection conn = extracted(url);
+            Statement stmt = conn.createStatement();
+            String sql ="insert into Lider (Nombre,Primer_Apellido,Segundo_Apellido,Salario,Ciudad_Residencia,Cargo,Clasificacion,Documento_Identidad,Fecha_Nacimiento) values('Nelson','Cardona','Ibarra',120000,'Cucuta','Desarrollador',6.0,'WMN567895',08-08-72)";
+            
+            //cantidad de filas
+            
+            int rows = stmt.executeUpdate(sql);
+
+            if (rows>0){
+                System.out.println("Se ha insertado un nuevo registro "+rows+" registro(s)");
+            }
+            
+            stmt.close();
+            
+            conn.close();
+            
+        }catch(Exception e){
+            System.out.println("Se ha presentado un error: " +e.getMessage());
+            e.printStackTrace();
+
+        }
+        
+        
+    }
+
+    private static Connection extracted(String url) throws SQLException {
+        return DriverManager.getConnection(url);
+    }    
+}
+
+
+    
+
+
+
+
