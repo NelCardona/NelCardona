@@ -1,0 +1,147 @@
+//..................................
+//  Reto 5 Requerimiento 1
+// Ventana tablas de Lider BD, 
+//•»ID_Lider •»SalarioPromedio •»Ciudad_Residencia 
+//..................................
+import java.awt.BorderLayout;
+import java.sql.SQLException;
+import java.util.ArrayList;
+//import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+
+import javax.swing.table.AbstractTableModel;
+
+import controlador.ControladorRequerimientos;
+import modelo.vo.Requerimiento_1Vo;
+
+
+public class VentanaRequerimiento extends JFrame{ 
+    
+    
+    private ControladorRequerimientos controlador;
+
+    private JTable tabla;
+   
+    public VentanaRequerimiento(){
+        
+        controlador = new ControladorRequerimientos();
+
+        inituI("Consultar"); 
+        setLocationRelativeTo(null); 
+
+    }
+    
+    private void inituI(String string) {
+        
+        setTitle("Interfaz Reto 5"); 
+        setDefaultCloseOperation(EXIT_ON_CLOSE); 
+        setSize(800,600); 
+        
+        var tbd = new JTabbedPane();
+        getContentPane().add(tbd, BorderLayout.CENTER); //
+        
+        var panel= new JPanel();  
+        
+        panel.setLayout(new BorderLayout()); 
+        
+        tbd.addTab("•» Consulta Requerimiento «•", panel);   
+        var panelEntrada = new JPanel();  
+        panelEntrada.add(new JLabel("Requerimiento 1 "));  
+        panelEntrada.add(new JLabel(" •»ID_Lider •»SalarioPromedio •»Ciudad_Residencia ")); 
+         
+        var btnConsulta = new JButton("Consultar!");
+        
+        
+        
+        btnConsulta.addActionListener(e -> cargarTablaConsulta()); 
+        
+
+        panelEntrada.add(btnConsulta);
+        
+        panel.add(panelEntrada, BorderLayout.PAGE_START); 
+        
+         
+        tabla = new JTable();        
+        panel.add(new JScrollPane(tabla), BorderLayout.CENTER);
+
+    }
+
+    private void cargarTablaConsulta() { 
+               
+        try {
+            var lista = controlador.consultarRequerimiento1();
+            var tableModel= new Requerimiento1TableModel(); 
+            tableModel.setData(lista);
+
+            tabla.setModel(tableModel);
+             
+
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), getTitle(), JOptionPane.ERROR_MESSAGE);
+                
+            
+        } 
+    }    
+    class Requerimiento1TableModel extends AbstractTableModel{
+            
+        private ArrayList<Requerimiento_1Vo> data;
+
+        public void setData(ArrayList<Requerimiento_1Vo> data){
+            this.data=data;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            switch(column){
+                case 0:
+                    return "ID Lider";
+                case 1:
+                    return "Salario";
+                case 2:
+                    return "Ciudad de Residencia";     
+
+            }
+            return super.getColumnName(column);
+        }
+    
+        @Override
+        public int getRowCount() {
+            return data.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            var registro= data.get(rowIndex);
+
+            switch(columnIndex){
+                case 0:
+                    return registro.getIdLider();
+                case 1:
+                    return registro.getSalario();
+                case 2:
+                    return registro.getCiudadResidencia();     
+
+            }
+            return null;
+        }
+    }
+}
+
+    
+
+              
+
+
+
