@@ -1,0 +1,188 @@
+//...............................................
+// Reto 5 Requerimiento 2
+// Ventana con las tablas Lider ID Proyecto  Nombre MAterial  Precio Unidad, promedio de foram Ascendendte 
+//......................................lIBRERIAS
+import java.awt.BorderLayout;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+
+import javax.swing.table.AbstractTableModel;
+
+import controlador.ControladorRequerimientos;
+
+import modelo.vo.Requerimiento_2Vo;
+//................................. 	RETO 5, Segundo REQUERIMIENTO
+
+public class VentanaRequerimiento2 extends JFrame{ //One class extender de JFrame
+    JButton boton1; //boton limpiar   
+    
+    //...............Despues para mostrar los elementos del primer requerimiento
+    //...............Lo declaramos
+    private ControladorRequerimientos controlador; // para todos
+
+    //-->crear la tabla
+    private JTable tabla2; 
+    
+    // Método Constructor
+    public VentanaRequerimiento2(){  //ventana requerimiento
+        //............Despues Se inicialice para el método constructor de Controlador
+        super("Titulo de Ventana");
+        controlador = new ControladorRequerimientos();
+        //controlador = new ControladorRequerimientos();
+
+        inituI("Consultar"); //Método que me genera la GUI
+        inituI("Limpiar");
+        //inituI("Consultar");
+        setLocationRelativeTo(null); // Para que coloque la interfaz gráfica null->para colocarla en el medio
+        //setLocationRelativeTo(null);
+        
+    }
+    // Generamos ese Método
+    private void inituI(String string) {
+        // a la ventana le colocamos un título
+        setTitle("Interfaz Reto 5"); //le damos nombre a la barra de título
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // para poder cerrar la ventana
+        setSize(800,600); // Tamaño de la ventana weight and height
+        //Colocamos todos los elementos de la interfaz
+        
+        var tbd = new JTabbedPane();
+        getContentPane().add(tbd, BorderLayout.CENTER); //
+        //Panel
+        var panel= new JPanel(); // se importa 
+        // establecr layout de ese panel
+        panel.setLayout(new BorderLayout()); //
+        // y adicionamos la...
+        tbd.addTab(" •» Consulta Requerimiento «•", panel); // tbd.addTab(title, component) --> Panel que se acabó de crear
+        //Que contenga un label y un botón
+        var panelEntrada = new JPanel(); // se importa 
+        panelEntrada.add(new JLabel("Requerimiento 2 •ID Proyecto  •Nombre Material  •Precio Unidad Promedio  ")); //cuadro de texto importar  
+        //crear el botón 
+        var btnConsulta2 = new JButton("Consultar!");
+        var btnConsulta= new JButton("Limpiar");
+        //Otras acciones PAnel de entrada con otro botón
+        //.......luego al botón de consulta se genera una acción
+        btnConsulta.addActionListener(e -> cargarTablaConsulta()); // Un método de escucha frente a una acción
+        btnConsulta2.addActionListener(a -> cargarTablaConsulta());
+        //.................................Se implementa éste método
+
+        panelEntrada.add(btnConsulta2);
+        panelEntrada.add(btnConsulta);
+        // Adicionamos al panel principal el Panel de entrada
+        panel.add(panelEntrada, BorderLayout.PAGE_START); // PARA EL PRINCIPIO
+        
+        //panel.add(panelEntrada, BorderLayout.PAGE_START);//.....hasta Aquí Ejecutamos para probar la ventna.
+        // luego.... Adicionamos Una tabla 
+        tabla2 = new JTable(); // para poder crearla arriba, declarar despues de la class principal
+        // ya impotada la ibreria Adicionamos al panelEntrada
+        panel.add(new JScrollPane(tabla2), BorderLayout.CENTER); // UN BORDE
+        //panel.add(new JScrollPane(tabla), BorderLayout.SOUTH);
+    }
+    private void cargarTablaConsulta() { // Se crea el método para la tabla, cambaindolo a void, no contolador
+        //return null-> borramos eel null
+        //para crear un array o variable que contiene ese contolador
+        // lo manejamos en un tray-catch
+        try {
+            var lista = controlador.consultarRequerimiento2();
+            // se necesita que ésto me genere la tablactipo table
+            //para ello se crea un modelo d esa tabla con una class a lo último ↓
+            //...............sabiendo que s tiene la lista
+            //..........Se crea una variable que tenga el modelo de la tabla
+            var tableModel= new Requerimiento2TableModel(); // constructor
+            tableModel.setData(lista); // OBJECT
+            // cual es el modelo
+            tabla2.setModel(tableModel);
+             
+
+        } catch (SQLException e) {
+            
+            //....borramos -> e.printStackTrace()
+            JOptionPane.showMessageDialog(this, e.getMessage(), getTitle(), JOptionPane.ERROR_MESSAGE);
+            //..................................                 titulo      message 
+            
+            
+        } 
+        
+
+    }
+    // se crea la clase                se extiende de ↑ la class
+    // para pasar los elementos, como objetos de la lista a ese modelo
+    //....a lo último ↓
+    //private NO ES .....Es un class
+    class Requerimiento2TableModel extends AbstractTableModel {
+        //...................esta class tiene que reciber los datos de lista
+        private ArrayList<Requerimiento_2Vo> data;
+        // como le paso la información, por un seter, no con un constructor
+        // ............Despues se crea el setter
+	
+        public void setData(ArrayList<Requerimiento_2Vo> data){ //Set
+            this.data=data; // para los elementos
+
+        }
+        // crear las columnas para verlas
+		 @Override
+        public String getColumnName(int column) { // Nombre de las columas, de acuerdo
+                                                  //al requerimiento 1		
+            switch(column){
+                case 0: // primera columna
+                    return "ID Proyecto";
+                case 1: //segunda columna
+                    return "Nombre Material";
+                case 2: // tercera columna
+                    return "Precio Unidad";     
+
+            }
+            return super.getColumnName(column); // devolver columas
+        }
+    
+        
+        @Override
+        public int getRowCount(){ // tres métodos que son los principales
+        //return 0-> borro  
+        // cuantas filas
+        // se sabe que recibe datos aaraylist con requerimientos 2
+            return data.size(); // sabiendo el tamaño
+        }
+
+        // implemente los métodos
+        @Override
+        public int getColumnCount(){
+        //cuantas columnas
+        //return 0-> borramos
+            return 3; // requerimiento 2 son 3 columnas
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex){
+        // los datos que voy a ingresar
+        // cuales son los valores
+            
+            var registro = data.get(rowIndex); // los registro que recibe cada objeto
+            //Requerimiento_2Vo registro;
+        //return null-> borramos
+        // deberá toma una decisión
+            switch(columnIndex){ // recibe como atributo del vo
+                case 0: // columna cero, la primera
+                    return registro.getIdProyecto();  // primer elemento
+
+                case 1: // segundo elemento
+                    return registro.getNombreMaterial();
+
+                case 2: // tercer elemento
+                    return registro.getPrecioUnidad();  //
+
+        }
+        return null; // para que se detenga.
+        
+        
+        }
+    }
+}
